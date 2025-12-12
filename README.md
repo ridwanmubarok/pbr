@@ -1,97 +1,288 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Asisten Belajar AI
 
-# Getting Started
+Aplikasi pembelajaran cerdas berbasis AI menggunakan React Native dan Gemini 2.5 Flash.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+**Tugas Kelompok UTS - Pemrograman Bergerak**
 
-## Step 1: Start Metro
+## Anggota Kelompok
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+| Nama | NIM |
+|------|-----|
+| Akmal Fauzi | (NIM) |
+| Firdi | (NIM) |
+| Ridwan Mubarok | (NIM) |
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Fitur
 
-```sh
-# Using npm
+✅ **Chat dengan AI** - Gemini 2.5 Flash model terbaru
+✅ **Ambil Foto** - Analisis gambar dengan kamera
+✅ **Upload Gambar** - Pilih gambar dari galeri
+✅ **Upload Dokumen** - AI bisa membaca PDF/DOC/DOCX
+✅ **Markdown Rendering** - Response AI dengan format yang bagus
+✅ **Typing Animation** - Animasi dots saat AI berpikir
+✅ **Modern UI** - Gradient, animasi, dan design yang clean
+✅ **Bahasa Indonesia** - Semua dalam Bahasa Indonesia
+✅ **Persistent Chat** - Riwayat chat tersimpan otomatis
+✅ **Custom AI Prompt** - 5 preset gaya AI + custom prompt
+✅ **Dropdown Menu** - Menu settings yang elegan
+
+## Login Credentials
+
+Aplikasi menggunakan autentikasi statis untuk login:
+
+- **Username**: `pbrkel`
+- **Password**: `12345678`
+
+# Cara Menjalankan Aplikasi
+
+## Prasyarat
+
+Pastikan sudah terinstall:
+- **Node.js** (versi 18 atau lebih baru)
+- **React Native CLI** - `npm install -g react-native-cli`
+- **Android Studio** (untuk Android) dengan SDK dan Emulator
+- **Xcode** (untuk iOS/macOS only)
+- **Java Development Kit (JDK)** versi 17
+
+Untuk panduan lengkap setup environment, lihat [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment).
+
+## Langkah-Langkah Setup
+
+### 1. Clone Repository
+
+```bash
+git clone <repository-url>
+cd pbr
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Environment Variables
+
+**PENTING**: Setup API key sebelum menjalankan aplikasi!
+
+1. Copy file `.env.example` menjadi `.env`:
+```bash
+cp .env.example .env
+```
+
+2. Dapatkan Gemini API Key:
+   - Kunjungi [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Login dengan Google Account
+   - Klik "Create API Key"
+   - Copy API key yang dihasilkan
+
+3. Edit file `.env` dan isi dengan API key Anda:
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+**Catatan Keamanan**:
+- File `.env` sudah ada di `.gitignore` - jangan commit!
+- Gunakan `.env.example` sebagai template
+- Jangan hardcode API key di source code
+
+### 4. Jalankan Metro Bundler
+
+Di terminal pertama, jalankan Metro bundler:
+
+```bash
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
+Atau dengan cache reset (jika ada masalah):
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+```bash
+npx react-native start --reset-cache
+```
 
-### Android
+### 5. Jalankan Aplikasi
 
-```sh
-# Using npm
+Buka terminal baru (Metro tetap running di terminal pertama):
+
+#### Untuk Android:
+
+```bash
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+**Catatan Android**:
+- Pastikan Android Emulator sudah running atau device terkoneksi
+- Pastikan USB Debugging enabled di device
+- Jika error, coba clean build:
+  ```bash
+  cd android && ./gradlew clean && cd ..
+  npm run android
+  ```
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+#### Untuk iOS (macOS only):
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+1. Install CocoaPods dependencies:
+```bash
+cd ios
+pod install
+cd ..
 ```
 
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+2. Jalankan aplikasi:
+```bash
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+**Catatan iOS**:
+- Hanya bisa di macOS dengan Xcode terinstall
+- Simulasi bisa memakan waktu beberapa menit untuk build pertama
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## Build APK untuk Testing (Android)
 
-## Step 3: Modify your app
+Untuk generate APK yang bisa di-install di device:
 
-Now that you have successfully run the app, let's make changes!
+```bash
+cd android
+./gradlew assembleRelease
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+APK akan tersimpan di: `android/app/build/outputs/apk/release/app-release.apk`
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## Teknologi yang Digunakan
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### Core Technologies
+- **React Native 0.76.6** - Framework mobile app
+- **TypeScript** - Type-safe JavaScript
+- **React Navigation** - Navigation management
 
-## Congratulations! :tada:
+### AI & Backend
+- **Google Gemini 2.5 Flash** - AI model untuk chat
+- **@google/generative-ai** - Gemini API client
 
-You've successfully run and modified your React Native App. :partying_face:
+### UI Libraries
+- **react-native-linear-gradient** - Gradient backgrounds
+- **@react-native-vector-icons/ionicons** - Icon library
+- **react-native-markdown-display** - Markdown rendering
 
-### Now what?
+### Media & File Handling
+- **react-native-image-picker** - Camera dan gallery access
+- **@react-native-documents/picker** - Document picker
+- **react-native-blob-util** - File operations
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+### State & Storage
+- **React Hooks** - State management
+- **@react-native-async-storage/async-storage** - Persistent storage
+- **Animated API** - Native animations
+
+### Development Tools
+- **react-native-dotenv** - Environment variables
+- **Metro Bundler** - JavaScript bundler
+- **Babel** - JavaScript compiler
 
 # Troubleshooting
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Cannot find module '@env'
 
-# Learn More
+Jika muncul error ini, hapus cache dan rebuild:
+```bash
+rm -rf node_modules/.cache
+npx react-native start --reset-cache
+```
 
-To learn more about React Native, take a look at the following resources:
+Untuk Android, clean build:
+```bash
+cd android && ./gradlew clean && cd ..
+npm run android
+```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## Permission Error untuk Dokumen (Android)
+
+Aplikasi akan meminta permission saat pertama kali mengakses dokumen. Pastikan izin diberikan di Settings > Apps > Asisten Belajar AI > Permissions.
+
+## API Quota Exceeded
+
+Jika mendapat error "Quota Exceeded":
+- Tunggu 24 jam untuk quota reset
+- Atau buat API key baru di [Google AI Studio](https://makersuite.google.com/app/apikey)
+- Lihat usage di [Google AI Usage](https://ai.dev/usage?tab=rate-limit)
+
+## Masalah Umum Lainnya
+
+If you're having other issues, see the [React Native Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+
+# Fitur Unggulan
+
+## Persistent Chat History
+
+Aplikasi secara otomatis menyimpan semua riwayat percakapan menggunakan **AsyncStorage**:
+
+- ✅ Chat history tersimpan otomatis setiap kali ada pesan baru
+- ✅ Riwayat tetap ada walaupun aplikasi ditutup dan dibuka lagi
+- ✅ Data tersimpan secara lokal di device (offline-first)
+- ✅ Hanya akan terhapus jika user memilih "Bersihkan Semua Chat"
+
+## Custom AI Prompt
+
+Sesuaikan gaya komunikasi AI sesuai kebutuhan:
+
+**5 Preset Gaya AI:**
+1. **Asisten Belajar (Default)** - Ramah dan mudah dipahami
+2. **Guru Profesional** - Mendalam dengan metode pengajaran efektif
+3. **Penjelasan Sederhana** - Seperti menjelaskan ke anak kecil
+4. **Akademis Formal** - Gaya formal dengan terminologi ilmiah
+5. **Kreatif & Interaktif** - Menggunakan cerita dan pendekatan kreatif
+
+**Custom Prompt:**
+- Tulis instruksi sendiri untuk AI
+- Kontrol penuh atas gaya komunikasi AI
+- Tersimpan dan bisa digunakan kapan saja
+
+# Model AI
+
+Aplikasi menggunakan **Gemini 2.5 Flash** yang mendukung:
+- Multimodal (text + image + PDF)
+- Response cepat dan akurat
+- Context window besar untuk dokumen panjang
+
+**Free Tier Limits:**
+- 15 RPM (requests per minute)
+- 1500 RPD (requests per day)
+
+Untuk quota lebih besar, upgrade ke paid plan mulai dari $0.50 per 1M tokens.
+
+# Struktur Project
+
+```
+pbr/
+├── src/
+│   ├── screens/
+│   │   ├── LoginScreen.tsx          # Halaman login
+│   │   └── AIChatScreen.tsx         # Halaman chat dengan AI
+│   ├── components/
+│   │   ├── PromptCustomizationModal.tsx # Modal untuk customize AI prompt
+│   │   ├── ConfirmationModal.tsx    # Modal konfirmasi reusable
+│   │   └── index.ts                 # Barrel exports
+│   ├── hooks/
+│   │   ├── useLoginForm.ts          # Hook untuk login form logic
+│   │   ├── useLoginAnimation.ts     # Hook untuk login animations
+│   │   ├── useChatMessages.ts       # Hook untuk chat messages & AI
+│   │   ├── useAttachments.ts        # Hook untuk attachments handling
+│   │   ├── useTypingAnimation.ts    # Hook untuk typing animations
+│   │   ├── useDropdownMenu.ts       # Hook untuk dropdown menu state
+│   │   ├── useSystemPrompt.ts       # Hook untuk AI prompt customization
+│   │   ├── usePersistedMessages.ts  # Hook untuk persistent chat storage
+│   │   └── index.ts                 # Barrel exports
+│   └── types/
+│       └── env.d.ts                 # TypeScript definitions
+├── android/                          # Android native code
+├── ios/                              # iOS native code
+├── .env                              # Environment variables (API key)
+├── .env.example                      # Template untuk .env
+├── babel.config.js                   # Babel configuration
+├── tsconfig.json                     # TypeScript configuration
+└── package.json                      # Dependencies
+```
+
+# License
+
+MIT
