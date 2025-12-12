@@ -8,9 +8,9 @@ Aplikasi pembelajaran cerdas berbasis AI menggunakan React Native dan Gemini 2.5
 
 | Nama | NIM |
 |------|-----|
-| Akmal Fauzi | (NIM) |
-| Firdi | (NIM) |
-| Ridwan Mubarok | (NIM) |
+| Akmal Fauzi | 230401010160 |
+| Firdi | 230401010153 |
+| Ridwan Mubarok | 230401010053 |
 
 ## Fitur
 
