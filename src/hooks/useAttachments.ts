@@ -53,45 +53,6 @@ export const useAttachments = (): UseAttachmentsReturn => {
     return true;
   };
 
-  const requestStoragePermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        const androidVersion = Platform.Version;
-        if (androidVersion >= 33) {
-          // Android 13+ - Request READ_MEDIA_DOCUMENTS
-          const granted = await PermissionsAndroid.request(
-            'android.permission.READ_MEDIA_DOCUMENTS' as any,
-            {
-              title: 'Izin Akses Dokumen',
-              message: 'Aplikasi memerlukan akses untuk membaca dokumen',
-              buttonNeutral: 'Tanya Nanti',
-              buttonNegative: 'Tolak',
-              buttonPositive: 'Izinkan',
-            },
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } else {
-          // Android < 13 - Request READ_EXTERNAL_STORAGE
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            {
-              title: 'Izin Akses Storage',
-              message: 'Aplikasi memerlukan akses untuk membaca dokumen',
-              buttonNeutral: 'Tanya Nanti',
-              buttonNegative: 'Tolak',
-              buttonPositive: 'Izinkan',
-            },
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        }
-      } catch (err) {
-        console.warn(err);
-        return false;
-      }
-    }
-    return true;
-  };
-
   const handleTakePhoto = async () => {
     try {
       const hasPermission = await requestCameraPermission();
@@ -175,16 +136,8 @@ export const useAttachments = (): UseAttachmentsReturn => {
 
   const handlePickDocument = async () => {
     try {
-      // Request permission first
-      const hasPermission = await requestStoragePermission();
-      if (!hasPermission) {
-        Alert.alert(
-          'Izin Ditolak',
-          'Izin akses dokumen diperlukan untuk memilih file',
-        );
-        return;
-      }
-
+      // DocumentPicker uses SAF (Storage Access Framework) which handles permissions automatically
+      // No need to request READ_MEDIA_DOCUMENTS manually on Android 13+
       const result = await DocumentPicker.pick({
         type: [
           DocumentPicker.types.pdf,
