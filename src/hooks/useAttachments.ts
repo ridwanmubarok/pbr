@@ -144,35 +144,30 @@ export const useAttachments = (): UseAttachmentsReturn => {
           DocumentPicker.types.doc,
           DocumentPicker.types.docx,
         ],
-        copyTo: 'cachesDirectory',
       });
 
       if (result && result.length > 0) {
         const doc = result[0];
 
+        console.log('Document picked:', {
+          name: doc.name,
+          uri: doc.uri,
+          type: doc.type,
+          size: doc.size,
+        });
+
         // Read file and convert to base64
         let base64Data: string | undefined;
         try {
-          let filePath = doc.uri;
+          const uri = doc.uri;
 
-          if (Platform.OS === 'android' && filePath.startsWith('content://')) {
-            // Android content URI - use fetch API which handles permissions better
-            const response = await ReactNativeBlobUtil.fetch(
-              'GET',
-              filePath,
-              {},
-            );
-            base64Data = await response.base64();
-          } else {
-            // iOS or file:// URI
-            const cleanPath = decodeURIComponent(
-              filePath.replace('file://', ''),
-            );
-            base64Data = await ReactNativeBlobUtil.fs.readFile(
-              cleanPath,
-              'base64',
-            );
-          }
+          // ReactNativeBlobUtil can read both content:// and file:// URIs directly
+          base64Data = await ReactNativeBlobUtil.fs.readFile(uri, 'base64');
+
+          console.log(
+            'Document read successfully, base64 length:',
+            base64Data?.length,
+          );
         } catch (readError) {
           console.error('Error reading file:', readError);
           Alert.alert(
