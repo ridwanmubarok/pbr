@@ -14,17 +14,17 @@ Aplikasi pembelajaran cerdas berbasis AI menggunakan React Native dan Gemini 2.5
 
 ## Fitur
 
-✅ **Chat dengan AI** - Gemini 2.5 Flash model terbaru
-✅ **Ambil Foto** - Analisis gambar dengan kamera
-✅ **Upload Gambar** - Pilih gambar dari galeri
-✅ **Upload Dokumen** - AI bisa membaca PDF/DOC/DOCX
-✅ **Markdown Rendering** - Response AI dengan format yang bagus
-✅ **Typing Animation** - Animasi dots saat AI berpikir
-✅ **Modern UI** - Gradient, animasi, dan design yang clean
-✅ **Bahasa Indonesia** - Semua dalam Bahasa Indonesia
-✅ **Persistent Chat** - Riwayat chat tersimpan otomatis
-✅ **Custom AI Prompt** - 5 preset gaya AI + custom prompt
-✅ **Dropdown Menu** - Menu settings yang elegan
+- ✅ **Chat dengan AI** - Gemini 2.5 Flash model terbaru
+- ✅ **Ambil Foto** - Analisis gambar dengan kamera
+- ✅ **Upload Gambar** - Pilih gambar dari galeri
+- ✅ **Upload Dokumen** - AI bisa membaca PDF/DOC/DOCX
+- ✅ **Markdown Rendering** - Response AI dengan format yang bagus
+- ✅ **Typing Animation** - Animasi dots saat AI berpikir
+- ✅ **Modern UI** - Gradient, animasi, dan design yang clean
+- ✅ **Bahasa Indonesia** - Semua dalam Bahasa Indonesia
+- ✅ **Persistent Chat** - Riwayat chat tersimpan otomatis
+- ✅ **Custom AI Prompt** - 5 preset gaya AI + custom prompt
+- ✅ **Dropdown Menu** - Menu settings yang elegan
 
 ## Login Credentials
 
