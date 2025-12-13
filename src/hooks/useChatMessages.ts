@@ -23,7 +23,8 @@ interface UseChatMessagesReturn {
   isLoadingMessages: boolean;
 }
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const apiKey = GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export const useChatMessages = (): UseChatMessagesReturn => {
   const { messages, setMessages, clearMessages, isLoading: isLoadingMessages } = usePersistedMessages();
@@ -49,7 +50,7 @@ export const useChatMessages = (): UseChatMessagesReturn => {
       const model = genAI.getGenerativeModel({
         model: 'gemini-2.5-flash',
         generationConfig: {
-          maxOutputTokens: 2048,
+          maxOutputTokens: 65536,
           temperature: 0.9,
         },
       });
