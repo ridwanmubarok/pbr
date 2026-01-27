@@ -22,17 +22,33 @@ import { useAttachments } from '../hooks/useAttachments';
 import { useTypingAnimation } from '../hooks/useTypingAnimation';
 import { useDropdownMenu } from '../hooks/useDropdownMenu';
 import { useSystemPrompt } from '../hooks/useSystemPrompt';
+import { useChatSessions } from '../hooks/useChatSessions';
+import { useSQLiteDatabase, Schedule } from '../hooks/useSQLiteDatabase';
 import { PromptCustomizationModal } from '../components/PromptCustomizationModal';
 import { ConfirmationModal } from '../components/ConfirmationModal';
+import { ScheduleModal } from '../components/ScheduleModal';
+import { ChatSidebar } from '../components/ChatSidebar';
+import { SchedulesListScreen } from '../screens/SchedulesListScreen';
+import NotificationService from '../services/notificationService';
 
 interface AIChatScreenProps {
   navigation: any;
 }
 
-const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
+const AIChatScreen: React.FC<AIChatScreenProps> = ({}) => {
   const flatListRef = useRef<FlatList>(null);
   const [showPromptModal, setShowPromptModal] = useState(false);
   const [showClearChatModal, setShowClearChatModal] = useState(false);
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showSchedulesList, setShowSchedulesList] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+
+  const {
+    currentConversationId,
+    selectConversation,
+    refreshConversations,
+    createConversationFromMessage,
+  } = useChatSessions();
 
   const {
     messages,
@@ -43,7 +59,7 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
     clearChat,
     performClearChat,
     isLoadingMessages,
-  } = useChatMessages();
+  } = useChatMessages({ conversationId: currentConversationId });
 
   const {
     attachments,
@@ -76,11 +92,18 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
     presets,
     selectPreset,
     setCustomPrompt,
-    getCurrentPrompt,
     resetToDefault,
+    getCurrentPrompt,
   } = useSystemPrompt();
 
+  const { createSchedule } = useSQLiteDatabase();
+
   const handleSendMessage = async () => {
+    // If no conversation yet, create one from the first message
+    if (!currentConversationId && inputText.trim()) {
+      const newId = await createConversationFromMessage(inputText.trim());
+      console.log('Created new conversation with ID:', newId);
+    }
     await sendMessage(attachments, getCurrentPrompt());
     clearAttachments();
   };
@@ -88,6 +111,19 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
   const handleClearChat = () => {
     clearChat(() => setShowClearChatModal(true));
     closeMenu();
+  };
+
+  const handleConversationSelect = async (conversationId: string) => {
+    console.log('Selecting conversation:', conversationId);
+    await selectConversation(conversationId);
+    await refreshConversations();
+  };
+
+  const handleOpenSidebar = async () => {
+    setShowSidebar(true);
+    // Refresh conversations when opening sidebar to ensure latest data
+    await refreshConversations();
+    console.log('Sidebar opened, conversations refreshed');
   };
 
   const handleConfirmClearChat = () => {
@@ -98,6 +134,55 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
   const handleOpenPromptModal = () => {
     setShowPromptModal(true);
     closeMenu();
+  };
+
+  const handleOpenScheduleModal = () => {
+    setShowScheduleModal(true);
+    closeMenu();
+  };
+
+  const handleOpenSchedulesList = () => {
+    setShowSchedulesList(true);
+    closeMenu();
+  };
+
+  const handleSchedule = async (title: string, hour: number, minute: number, days: number[]) => {
+    try {
+      // Save to SQLite
+      const scheduleId = await createSchedule({
+        title,
+        hour,
+        minute,
+        repeatDays: JSON.stringify(days),
+        enabled: true,
+      });
+
+      // Schedule notification
+      const schedule: Schedule = {
+        id: scheduleId,
+        title,
+        hour,
+        minute,
+        repeatDays: JSON.stringify(days),
+        enabled: true,
+        createdAt: new Date().toISOString(),
+      };
+
+      await NotificationService.scheduleNotification(schedule);
+
+      // Show test notification to confirm setup
+      await NotificationService.showTestNotification();
+
+      console.log('✅ Schedule Created:', title);
+      console.log('Time:', `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`);
+      if (days.length > 0) {
+        const dayNames = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+        const selectedDayNames = days.map(d => dayNames[d]).join(', ');
+        console.log('Repeat on:', selectedDayNames);
+      }
+    } catch (error) {
+      console.error('❌ Failed to create schedule:', error);
+    }
   };
 
   const formatTime = (date: Date) => {
@@ -249,17 +334,12 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
 
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            } else {
-              navigation.navigate('Login');
-            }
-          }}
+          style={styles.sidebarButton}
+          onPress={handleOpenSidebar}
         >
-          <Icon name="arrow-back" size={24} color="#374151" />
+          <Icon name="menu" size={24} color="#374151" />
         </TouchableOpacity>
+
         <View style={styles.headerContent}>
           <Text style={styles.headerTitle}>Asisten Belajar AI</Text>
           <Text style={styles.headerSubtitle}>
@@ -315,6 +395,36 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
                         />
                         <Text style={styles.menuItemText}>
                           Penyesuaian Prompt AI
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={handleOpenScheduleModal}
+                        activeOpacity={0.7}
+                      >
+                        <Icon
+                          name="time-outline"
+                          size={20}
+                          color="#10b981"
+                        />
+                        <Text style={styles.menuItemText}>
+                          Jadwal Belajar
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={handleOpenSchedulesList}
+                        activeOpacity={0.7}
+                      >
+                        <Icon
+                          name="list-outline"
+                          size={20}
+                          color="#8b5cf6"
+                        />
+                        <Text style={styles.menuItemText}>
+                          Lihat Daftar Jadwal
                         </Text>
                       </TouchableOpacity>
 
@@ -543,6 +653,32 @@ const AIChatScreen: React.FC<AIChatScreenProps> = ({ navigation }) => {
         iconColor="#ef4444"
         confirmColor={['#ef4444', '#dc2626']}
       />
+
+      <ScheduleModal
+        visible={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+        onSchedule={handleSchedule}
+      />
+
+      <Modal
+        visible={showSchedulesList}
+        animationType="slide"
+        onRequestClose={() => setShowSchedulesList(false)}
+      >
+        <SchedulesListScreen onClose={() => setShowSchedulesList(false)} />
+      </Modal>
+
+      <Modal
+        visible={showSidebar}
+        animationType="slide"
+        onRequestClose={() => setShowSidebar(false)}
+      >
+        <ChatSidebar
+          onClose={() => setShowSidebar(false)}
+          currentConversationId={currentConversationId}
+          onConversationSelect={handleConversationSelect}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -577,7 +713,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
-  backButton: {
+  sidebarButton: {
     width: 40,
     height: 40,
     justifyContent: 'center',

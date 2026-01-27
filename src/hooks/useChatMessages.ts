@@ -12,12 +12,19 @@ export interface Message {
   attachments?: Attachment[];
 }
 
+interface UseChatMessagesProps {
+  conversationId?: string | null;
+}
+
 interface UseChatMessagesReturn {
   messages: Message[];
   isTyping: boolean;
   inputText: string;
   setInputText: (text: string) => void;
-  sendMessage: (attachments: Attachment[], systemPrompt?: string) => Promise<void>;
+  sendMessage: (
+    attachments: Attachment[],
+    systemPrompt?: string,
+  ) => Promise<void>;
   clearChat: (onConfirm: () => void) => void;
   performClearChat: () => void;
   isLoadingMessages: boolean;
@@ -26,12 +33,22 @@ interface UseChatMessagesReturn {
 const apiKey = GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 
-export const useChatMessages = (): UseChatMessagesReturn => {
-  const { messages, setMessages, clearMessages, isLoading: isLoadingMessages } = usePersistedMessages();
+export const useChatMessages = ({
+  conversationId,
+}: UseChatMessagesProps = {}): UseChatMessagesReturn => {
+  const {
+    messages,
+    setMessages,
+    clearMessages,
+    isLoading: isLoadingMessages,
+  } = usePersistedMessages({ conversationId });
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
 
-  const sendMessage = async (attachments: Attachment[], systemPrompt?: string) => {
+  const sendMessage = async (
+    attachments: Attachment[],
+    systemPrompt?: string,
+  ) => {
     if (!inputText.trim() && attachments.length === 0) return;
 
     const userMessage: Message = {
@@ -76,7 +93,9 @@ export const useChatMessages = (): UseChatMessagesReturn => {
 
       // Add system prompt if provided
       const finalText = systemPrompt
-        ? `${systemPrompt}\n\nUser: ${userMessage.text || 'Tolong analisis gambar/dokumen ini.'}`
+        ? `${systemPrompt}\n\nUser: ${
+            userMessage.text || 'Tolong analisis gambar/dokumen ini.'
+          }`
         : userMessage.text || 'Tolong analisis gambar/dokumen ini.';
 
       parts.push({

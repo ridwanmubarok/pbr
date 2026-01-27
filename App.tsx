@@ -12,6 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LoginScreen from './src/screens/LoginScreen';
 import AIChatScreen from './src/screens/AIChatScreen';
+import { PermissionScreen } from './src/screens/PermissionScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,21 +22,29 @@ function App(): React.JSX.Element {
       <GestureHandlerRootView style={styles.container}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName="Login"
+            initialRouteName="Permission"
             screenOptions={{
               headerShown: false,
               gestureEnabled: true,
               gestureDirection: 'horizontal',
             }}>
-            <Stack.Screen 
-              name="Login" 
+            <Stack.Screen
+              name="Permission"
+              component={PermissionScreen}
+              options={{
+                animationTypeForReplace: 'push',
+                gestureEnabled: false,
+              }}
+            />
+            <Stack.Screen
+              name="Login"
               component={LoginScreen}
               options={{
                 animationTypeForReplace: 'push',
               }}
             />
-            <Stack.Screen 
-              name="AIChat" 
+            <Stack.Screen
+              name="AIChat"
               component={AIChatScreen}
               options={{
                 gestureEnabled: false,
